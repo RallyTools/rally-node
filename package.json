@@ -1,0 +1,29 @@
+{
+    "name": "rally",
+    "version": "0.0.0",
+    "description": "Rally REST Toolkit for Node.js",
+    "contributors": [
+        {
+            "name": "Kyle Morse",
+            "email": "kmorse@rallydev.com"
+        }
+    ],
+    "main": "lib/main.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/krmorse/rally-node.git"
+    },
+    "dependencies": {
+        "request": "2.27.x",
+        "q": "0.9.7"
+    },
+    "author": "Kyle Morse",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/krmorse/rally-node/issues"
+    },
+    "homepage": "https://github.com/krmorse/rally-node"
+}
