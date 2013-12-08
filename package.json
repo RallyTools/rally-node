@@ -10,15 +10,21 @@
     ],
     "main": "lib/main.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "mocha spec"
     },
     "repository": {
         "type": "git",
         "url": "https://github.com/krmorse/rally-node.git"
     },
     "dependencies": {
-        "request": "2.27.x",
-        "q": "0.9.7"
+        "request": "2.29.x",
+        "q": "0.9.7",
+        "lodash": "2.4.x"
+    },
+    "devDependencies": {
+        "mocha": "1.15.x",
+        "should": "2.1.x",
+        "sinon": "1.7.x"
     },
     "author": "Kyle Morse",
     "license": "MIT",
