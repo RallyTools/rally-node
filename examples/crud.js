@@ -1,5 +1,6 @@
 var rally = require('./../lib/main.js'),
-  restApi = new rally.RestApi({server: 'https://test7cluster.rallydev.com'});
+    restApi = new rally.RestApi(),
+    Ref = rally.Ref;
 
 function createDefect() {
     return restApi.create({
@@ -14,14 +15,13 @@ function createDefect() {
 
 function readDefect(result) {
     return restApi.get({
-        ref: '/defect/' + result.Object.ObjectID //todo: use ref instead
+        ref: Ref.getRelative(result.Object)
     });
 }
 
 function updateDefect(result) {
-    //todo: inconsistent result from read (should be stored on Object property?
     return restApi.update({
-        ref: '/defect/' + result.ObjectID, //todo: use ref instead
+        ref: Ref.getRelative(result), //todo: inconsistent result from read (should be stored on Object property?
         data: {
             Name: 'My Updated Defect'
         }
@@ -30,7 +30,7 @@ function updateDefect(result) {
 
 function deleteDefect(result) {
     return restApi.delete({
-        ref: '/defect/' + result.Object.ObjectID  //todo: use ref instead
+        ref: Ref.getRelative(result.Object)
     });
 }
 
@@ -38,19 +38,9 @@ createDefect()
     .then(readDefect)
     .then(updateDefect)
     .then(deleteDefect)
-    .fail(function(errors) {
-        console.log(errors);
+    .fin(function() {
+        console.log('Success!');
+    })
+    .fail(function (errors) {
+        console.log('Failure!', errors);
     });
-
-//var promise = restApi.get({
-//    ref: '/hierarchicalrequirement/15176552210'
-//}, function(error, result, rawResponse) {
-//    console.log(arguments);
-//});
-//
-//var promise = restApi.get({
-//    ref: '/hierarchicalrequirement/15176552210'
-//}).then(function(error, result, rawResponse) {
-//    console.log(arguments);
-//});
-
