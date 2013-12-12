@@ -1,5 +1,5 @@
 var should = require('should'),
-    rally = require('../lib/main');
+    rally = require('..');
 
 describe('RestApi', function () {
     var restApi = new rally.RestApi();

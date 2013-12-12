@@ -8,9 +8,9 @@
             "email": "kmorse@rallydev.com"
         }
     ],
-    "main": "lib/main.js",
+    "main": "index.js",
     "scripts": {
-        "test": "mocha spec"
+        "test": "mocha spec/**/*.js"
     },
     "repository": {
         "type": "git",
