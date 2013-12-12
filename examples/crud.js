@@ -34,13 +34,18 @@ function deleteDefect(result) {
     });
 }
 
+function onSuccess(result) {
+    console.log('Success!');
+}
+
+function onError(result) {
+    console.log('Failure!', errors);
+
+}
+
 createDefect()
     .then(readDefect)
     .then(updateDefect)
     .then(deleteDefect)
-    .fin(function() {
-        console.log('Success!');
-    })
-    .fail(function (errors) {
-        console.log('Failure!', errors);
-    });
+    .then(onSuccess)
+    .fail(onError);
