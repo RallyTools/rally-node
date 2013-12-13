@@ -21,7 +21,7 @@ function readDefect(result) {
 
 function updateDefect(result) {
     return restApi.update({
-        ref: refUtils.getRelative(result), //todo: inconsistent result from read (should be stored on Object property?
+        ref: refUtils.getRelative(result.Object),
         data: {
             Name: 'My Updated Defect'
         }
