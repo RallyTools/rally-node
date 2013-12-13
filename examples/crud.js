@@ -9,7 +9,7 @@ function createDefect() {
             Name: 'My Defect',
             Environment: 'Test'
         }
-        //todo: request options, rally options (fetch, etc)
+        //todo: rally options (fetch, etc)
     });
 }
 

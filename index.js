@@ -8,4 +8,6 @@ function restApi(options) {
 restApi.RestApi = RestApi;
 restApi.util = util;
 
+restApi.debug = process.env.NODE_DEBUG && /rally/.test(process.env.NODE_DEBUG);
+
 module.exports = restApi;
