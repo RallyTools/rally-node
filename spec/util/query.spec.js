@@ -39,6 +39,13 @@ describe('Query', function() {
             q.op.should.eql('AND');
             q.right.should.eql({left: 'Owner', op: '=', right: '/user/1234'});
         });
+
+        it('should combine three queries, including an or', function() {
+            var q = queryUtils.create('Name', 'contains', 'foo').and('Owner', '=', '/user/1234').or('ScheduleState', '<', 'Accepted');
+            q.left.should.eql({left: {left: 'Name', op: 'contains', right: 'foo'}, op: 'AND', right: {left: 'Owner', op: '=', right: '/user/1234'}});
+            q.op.should.eql('OR');
+            q.right.should.eql({left: 'ScheduleState', op: '<', right: 'Accepted'});
+        });
     });
 
     describe('#or', function() {
@@ -48,6 +55,13 @@ describe('Query', function() {
             q.left.should.eql({left: 'Name', op: 'contains', right: 'foo'});
             q.op.should.eql('OR');
             q.right.should.eql({left: 'Owner', op: '=', right: '/user/1234'});
+        });
+
+        it('should combine three queries, including an and', function() {
+            var q = queryUtils.create('Name', 'contains', 'foo').or('Owner', '=', '/user/1234').and('ScheduleState', '<', 'Accepted');
+            q.left.should.eql({left: {left: 'Name', op: 'contains', right: 'foo'}, op: 'OR', right: {left: 'Owner', op: '=', right: '/user/1234'}});
+            q.op.should.eql('AND');
+            q.right.should.eql({left: 'ScheduleState', op: '<', right: 'Accepted'});
         });
     });
 });
