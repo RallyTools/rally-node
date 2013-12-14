@@ -7,7 +7,6 @@ function queryDefects() {
         start: 1,
         pageSize: 1,
         limit: 10
-        //todo: rally options (fetch, etc)
     });
 }
 
@@ -15,9 +14,8 @@ function onSuccess(result) {
     console.log('Success!', result.Results);
 }
 
-function onError(result) {
+function onError(errors) {
     console.log('Failure!', errors);
-
 }
 
 queryDefects()

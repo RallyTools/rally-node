@@ -9,7 +9,6 @@ function createDefect() {
             Name: 'My Defect',
             Environment: 'Test'
         }
-        //todo: rally options (fetch, etc)
     });
 }
 
@@ -38,9 +37,8 @@ function onSuccess(result) {
     console.log('Success!');
 }
 
-function onError(result) {
+function onError(errors) {
     console.log('Failure!', errors);
-
 }
 
 createDefect()
