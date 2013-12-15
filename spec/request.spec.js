@@ -63,7 +63,7 @@ describe('Request', function() {
         it('calls back with an error', function(done) {
             var rr = createRequest();
             var error = 'Error!';
-            this.get.yields(error);
+            this.get.yieldsAsync(error);
             rr.doRequest('get', {url: '/someUrl'}, function(err, body) {
                 err.should.eql([error]);
                 should.not.exist(body);
@@ -74,7 +74,7 @@ describe('Request', function() {
         it('rejects the promise with an error', function(done) {
             var rr = createRequest();
             var error = 'Error!';
-            this.get.yields(error);
+            this.get.yieldsAsync(error);
             var onSuccess = sinon.stub();
             rr.doRequest('get', {url: '/someUrl'}).then(onSuccess, function(err) {
                 err.should.eql([error]);
@@ -87,7 +87,7 @@ describe('Request', function() {
             var rr = createRequest();
             var error = 'Error!';
             var responseBody = {Result: {foo: 'bar', Errors: [error], Warnings: []}};
-            this.get.yields(null, {statusCode: 200}, responseBody);
+            this.get.yieldsAsync(null, {statusCode: 200}, responseBody);
             rr.doRequest('get', {url: '/someUrl'}, function(err, body) {
                 err.should.eql([error]);
                 should.not.exist(body);
@@ -99,7 +99,7 @@ describe('Request', function() {
             var rr = createRequest();
             var error = 'Error!';
             var responseBody = {Result: {foo: 'bar', Errors: [error], Warnings: []}};
-            this.get.yields(null, {statusCode: 200}, responseBody);
+            this.get.yieldsAsync(null, {statusCode: 200}, responseBody);
             var onSuccess = sinon.stub();
             rr.doRequest('get', {url: '/someUrl'}).then(onSuccess, function(err) {
                 err.should.eql([error]);
@@ -111,7 +111,7 @@ describe('Request', function() {
         it('calls back with a success', function(done) {
             var rr = createRequest();
             var responseBody = {Result: {foo: 'bar', Errors: [], Warnings: []}};
-            this.get.yields(null, {statusCode: 200}, responseBody);
+            this.get.yieldsAsync(null, {statusCode: 200}, responseBody);
             rr.doRequest('get', {url: '/someUrl'}, function(err, body) {
                 should.not.exist(err);
                 body.should.eql(responseBody.Result);
@@ -122,7 +122,7 @@ describe('Request', function() {
         it('resolves the promise with a success', function(done) {
             var rr = createRequest();
             var responseBody = {Result: {foo: 'bar', Errors: [], Warnings: []}};
-            this.get.yields(null, {statusCode: 200}, responseBody);
+            this.get.yieldsAsync(null, {statusCode: 200}, responseBody);
             var onError = sinon.stub();
             rr.doRequest('get', {url: '/someUrl'}).then(function(result) {
                 result.should.eql(responseBody.Result);
@@ -143,18 +143,90 @@ describe('Request', function() {
             this.get.firstCall.args[0].should.eql({url: rr.wsapiUrl + '/security/authorize'});
         });
 
-//        it('passes along the security token to doRequest and returns the promise', function(done) {
-//            var rr = createRequest();
-//            var token = 'a secret token';
-//            var putResponseBody = {OperationResult: {Errors: [], Warnings: [], Object: {}}};
-//            this.get.yields(null, {}, {OperationResult: {SecurityToken: token}});
-//            this.put.yields(null, {}, putResponseBody);
-//            var onError = sinon.stub();
-//            rr.doSecuredRequest('put', {foo: 'bar'}).then(function(result) {
-//                console.log('hi');
-//                done();
-//            }, onError);
-//        });
+        it('passes along the security token to doRequest and calls back on success', function(done) {
+            var rr = createRequest();
+            var token = 'a secret token';
+            var putResponseBody = {OperationResult: {Errors: [], Warnings: [], Object: {}}};
+            this.get.yieldsAsync(null, {statusCode: 200}, {OperationResult: {Errors: [], Warnings: [], SecurityToken: token}});
+            this.put.yieldsAsync(null, {statusCode: 200}, putResponseBody);
+            var self = this;
+            rr.doSecuredRequest('put', {foo: 'bar'}, function(error, result) {
+                self.put.callCount.should.eql(1);
+                self.put.firstCall.args[0].foo.should.eql('bar');
+                self.put.firstCall.args[0].qs.key.should.eql(token);
+                putResponseBody.OperationResult.should.eql(result);
+                should.not.exist(error);
+                done();
+            });
+        });
+
+        it('passes along the security token to doRequest and resolves the promise on success', function(done) {
+            var rr = createRequest();
+            var token = 'a secret token';
+            var putResponseBody = {OperationResult: {Errors: [], Warnings: [], Object: {}}};
+            this.get.yieldsAsync(null, {statusCode: 200}, {OperationResult: {Errors: [], Warnings: [], SecurityToken: token}});
+            this.put.yieldsAsync(null, {statusCode: 200}, putResponseBody);
+            var onError = sinon.stub();
+            var self = this;
+            rr.doSecuredRequest('put', {foo: 'bar'}).then(function(result) {
+                self.put.callCount.should.eql(1);
+                self.put.firstCall.args[0].foo.should.eql('bar');
+                self.put.firstCall.args[0].qs.key.should.eql(token);
+                putResponseBody.OperationResult.should.eql(result);
+                onError.callCount.should.eql(0);
+                done();
+            }, onError);
+        });
+
+        it('rejects the promise on security token failure', function(done) {
+            var rr = createRequest();
+            var error = 'Some key error';
+            this.get.yieldsAsync(null, {statusCode: 200}, {OperationResult: {Errors: [error]}});
+            var onSuccess = sinon.stub();
+            rr.doSecuredRequest('put', {}).then(onSuccess, function(err) {
+                err.should.eql([error]);
+                onSuccess.callCount.should.eql(0);
+                done();
+            });
+        });
+
+        it('calls back with error on security token failure', function(done) {
+            var rr = createRequest();
+            var error = 'Some key error';
+            this.get.yieldsAsync(null, {statusCode: 200}, {OperationResult: {Errors: [error]}});
+            rr.doSecuredRequest('put', {}, function(err, result) {
+                err.should.eql([error]);
+                should.not.exist(result);
+                done();
+            });
+        });
+
+        it('rejects the promise on request failure', function(done) {
+            var rr = createRequest();
+            var error = 'An error';
+            var putResponseBody = {OperationResult: {Errors: [error]}};
+            this.get.yieldsAsync(null, {statusCode: 200}, {OperationResult: {Errors: [], Warnings: [], SecurityToken: 'foo'}});
+            this.put.yieldsAsync(null, {statusCode: 200}, putResponseBody);
+            var onSuccess = sinon.stub();
+            rr.doSecuredRequest('put', {}).then(onSuccess, function(err) {
+                err.should.eql([error]);
+                onSuccess.callCount.should.eql(0);
+                done();
+            });
+        });
+
+        it('calls back with error on request failurepasses along the security token to doRequest and resolves the promise on success', function(done) {
+            var rr = createRequest();
+            var error = 'An error';
+            var putResponseBody = {OperationResult: {Errors: [error]}};
+            this.get.yieldsAsync(null, {statusCode: 200}, {OperationResult: {Errors: [], Warnings: [], SecurityToken: 'foo'}});
+            this.put.yieldsAsync(null, {statusCode: 200}, putResponseBody);
+            rr.doSecuredRequest('put', {}, function(err, result) {
+                err.should.eql([error]);
+                should.not.exist(result);
+                done();
+            });
+        });
     });
 
     describe('#httpMethods', function() {
