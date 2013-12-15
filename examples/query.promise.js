@@ -10,7 +10,7 @@ function queryDefects() {
         limit: 10,
         order: 'FormattedID',
         fetch: ['FormattedID', 'Name', 'Priority', 'Severity'],
-        query: queryUtils.create('State', '=', 'Open')
+        query: queryUtils.where('State', '=', 'Open')
     });
 }
 

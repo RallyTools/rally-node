@@ -21,7 +21,7 @@ describe('Request', function() {
     });
 
     function createRequest(options) {
-        return rallyRequest(_.extend({
+        return rallyRequest.init(_.extend({
             server: 'https://rally1.rallydev.com',
             apiVersion: 'v2.0'
         }, options));

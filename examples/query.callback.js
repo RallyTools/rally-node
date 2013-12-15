@@ -10,13 +10,13 @@ function queryOpenDefects(callback) {
         limit: 10,
         order: 'FormattedID',
         fetch: ['FormattedID', 'Name', 'Priority', 'Severity'],
-        query: queryUtils.create('State', '=', 'Open')
+        query: queryUtils.where('State', '=', 'Open')
     }, callback);
 }
 
 function processResults(error, result) {
     if (error) {
-        console.log('Failure!', errors);
+        console.log('Failure!', error);
     } else {
         console.log('Success!', result);
     }
