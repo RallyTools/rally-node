@@ -1,8 +1,9 @@
 var rally = require('..'),
-    refUtils = rally.util.ref,
-    restApi = rally();
+    restApi = rally(),
+    refUtils = rally.util.ref;
 
 function createDefect() {
+    console.log('Creating defect...');
     return restApi.create({
         type: 'defect',
         data: {
@@ -13,28 +14,36 @@ function createDefect() {
 }
 
 function readDefect(result) {
+    console.log('Defect created:', refUtils.getRelative(result.Object));
+    console.log('Reading defect...');
     return restApi.get({
-        ref: refUtils.getRelative(result.Object)
+        ref: result.Object,
+        fetch: ['FormattedID', 'Name']
     });
 }
 
 function updateDefect(result) {
+    console.log('Defect read:', result.Object.FormattedID, '-', result.Object.Name);
+    console.log('Updating defect...');
     return restApi.update({
-        ref: refUtils.getRelative(result.Object),
+        ref: result.Object,
         data: {
             Name: 'My Updated Defect'
-        }
+        },
+        fetch: ['Name']
     });
 }
 
 function deleteDefect(result) {
+    console.log('Defect updated:', result.Object.Name);
+    console.log('Deleting defect...');
     return restApi.delete({
-        ref: refUtils.getRelative(result.Object)
+        ref: result.Object
     });
 }
 
 function onSuccess(result) {
-    console.log('Success!');
+    console.log('Success!', result);
 }
 
 function onError(errors) {
