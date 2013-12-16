@@ -1,6 +1,7 @@
 var should = require('should'),
     RestApi = require('../lib/restapi'),
     request = require('../lib/request'),
+    queryUtils = require('../lib/util/query'),
     sinon = require('sinon'),
     Q = require('q');
 
@@ -296,6 +297,104 @@ describe('RestApi', function() {
     });
 
     describe('#query', function() {
-        //todo
+
+        it('translates workspace scope request options', function() {
+            var restApi = new RestApi();
+            restApi.query({
+                type: '/defect',
+                scope: {workspace: '/workspace/1234'},
+                fetch: ['FormattedID'],
+                requestOptions: {
+                    qs: {foo: 'bar'}
+                }
+            });
+
+            this.get.callCount.should.eql(1);
+            var args = this.get.firstCall.args[0];
+            args.qs.workspace.should.eql('/workspace/1234');
+            args.qs.fetch.should.eql('FormattedID');
+            args.qs.foo.should.eql('bar');
+        });
+
+        it('translates project scope request options', function() {
+            var restApi = new RestApi();
+            restApi.query({
+                type: '/defect',
+                scope: {project: '/project/1234', up: false, down: true},
+                fetch: ['FormattedID'],
+                requestOptions: {
+                    qs: {foo: 'bar'}
+                }
+            });
+
+            this.get.callCount.should.eql(1);
+            var args = this.get.firstCall.args[0];
+            args.qs.project.should.eql('/project/1234');
+            args.qs.projectScopeUp.should.eql(false);
+            args.qs.projectScopeDown.should.eql(true);
+            args.qs.fetch.should.eql('FormattedID');
+            args.qs.foo.should.eql('bar');
+        });
+
+        it('translates paging scope request options', function() {
+            var restApi = new RestApi();
+            restApi.query({
+                type: '/defect',
+                start: 5,
+                pageSize: 10,
+                order: ['Severity', 'FormattedID DESC'],
+                requestOptions: {
+                    qs: {foo: 'bar'}
+                }
+            });
+
+            this.get.callCount.should.eql(1);
+            var args = this.get.firstCall.args[0];
+            args.qs.start.should.eql(5);
+            args.qs.pagesize.should.eql(10);
+            args.qs.order.should.eql('Severity,FormattedID DESC');
+            args.qs.foo.should.eql('bar');
+        });
+
+        it('translates query request options', function() {
+            var restApi = new RestApi();
+            var query = queryUtils.where('State', '=', 'Submitted');
+            restApi.query({
+                type: '/defect',
+                query: query,
+                requestOptions: {
+                    qs: {foo: 'bar'}
+                }
+            });
+
+            this.get.callCount.should.eql(1);
+            var args = this.get.firstCall.args[0];
+            args.qs.query.should.eql(query.toQueryString());
+            args.qs.foo.should.eql('bar');
+        });
+
+        it('generates correct get request by type', function() {
+            var restApi = new RestApi();
+            restApi.query({
+                type: 'defect'
+            });
+
+            this.get.callCount.should.eql(1);
+            var args = this.get.firstCall.args;
+            args[0].url.should.eql('/defect');
+        });
+
+        it('generates correct get request by ref', function() {
+            var restApi = new RestApi();
+            restApi.query({
+                ref: {_ref: '/defect/1234/tasks'}
+            });
+
+            this.get.callCount.should.eql(1);
+            var args = this.get.firstCall.args;
+            args[0].url.should.eql('/defect/1234/tasks');
+        });
+
+        //todo: paging tests
     });
 });
