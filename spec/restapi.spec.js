@@ -265,7 +265,7 @@ describe('RestApi', function() {
                     result.Warnings.should.eql([]);
                     result.Object.should.eql({Name: 'Foo'});
                     done();
-                }, onError);
+                }, onError).done();
         });
 
         it('calls back with error', function(done) {
@@ -292,7 +292,7 @@ describe('RestApi', function() {
                     onSuccess.callCount.should.eql(0);
                     err.should.eql([error]);
                     done();
-                });
+                }).done();
         });
     });
 
@@ -395,6 +395,158 @@ describe('RestApi', function() {
             args[0].url.should.eql('/defect/1234/tasks');
         });
 
-        //todo: paging tests
+        it('calls back with results', function(done) {
+            var results = [
+                {Name: 'Foo'}
+            ];
+            this.get.returns(Q.resolve({Errors: [], Warnings: [], StartIndex: 1, TotalResultCount: results.length, Results: results}));
+            var restApi = new RestApi();
+            restApi.query({
+                type: 'defect'
+            }, function(error, result) {
+                should.not.exist(error);
+                result.Errors.should.eql([]);
+                result.Warnings.should.eql([]);
+                result.Results.should.eql(results);
+                done();
+            });
+        });
+
+        it('resolves promise with results', function(done) {
+            var results = [
+                {Name: 'Foo'}
+            ];
+            this.get.returns(Q.resolve({Errors: [], Warnings: [], StartIndex: 1, TotalResultCount: results.length, Results: results}));
+            var restApi = new RestApi();
+            var onError = sinon.stub();
+            restApi.query({
+                type: 'defect'
+            }).then(function(result) {
+                    onError.callCount.should.eql(0);
+                    result.Errors.should.eql([]);
+                    result.Warnings.should.eql([]);
+                    result.Results.should.eql(results);
+                    done();
+                }, onError).done();
+        });
+
+        it('calls back with error', function(done) {
+            var error = 'Error!';
+            this.get.returns(Q.reject([error]));
+            var restApi = new RestApi();
+            restApi.query({
+                type: 'defect'
+            }, function(err, result) {
+                err.should.eql([error]);
+                should.not.exist(result);
+                done();
+            });
+        });
+
+        it('rejects promise with error', function(done) {
+            var error = 'Error!';
+            this.get.returns(Q.reject([error]));
+            var onSuccess = sinon.stub();
+            var restApi = new RestApi();
+            restApi.query({
+                type: 'defect'
+            }).then(onSuccess, function(err) {
+                    onSuccess.callCount.should.eql(0);
+                    err.should.eql([error]);
+                    done();
+                }).done();
+        });
+
+        describe('paging', function() {
+            var results = [];
+            for (var i = 0; i < 10; i++) {
+                results.push(i + 1);
+            }
+            beforeEach(function() {
+                this.get.restore();
+                this.get = sinon.stub(request.Request.prototype, 'get', function(options) {
+                    var start = options.qs.start,
+                        pageSize = options.qs.pagesize;
+                    return Q({Errors: [], Warnings: [], StartIndex: start, TotalResultCount: results.length, Results: results.slice(start - 1, start - 1 + pageSize)});
+                });
+            });
+
+            it('should return 1 page if no limit specified', function(done) {
+                var restApi = new RestApi();
+                restApi.query({
+                    type: 'defect',
+                    start: 1,
+                    pageSize: 2
+                }).then(function(result) {
+                        result.Results.should.eql([1, 2]);
+                        done();
+                    }).done();
+            });
+
+            it('should return multiple pages if limit specified', function(done) {
+                var restApi = new RestApi();
+                restApi.query({
+                    type: 'defect',
+                    start: 1,
+                    pageSize: 2,
+                    limit: 6
+                }).then(function(result) {
+                        result.Results.should.eql([1, 2, 3, 4, 5, 6]);
+                        done();
+                    }).done();
+            });
+
+            it('should return no more than TotalResultCount', function(done) {
+                var restApi = new RestApi();
+                restApi.query({
+                    type: 'defect',
+                    start: 1,
+                    pageSize: 5,
+                    limit: 100
+                }).then(function(result) {
+                        result.Results.should.eql(results);
+                        done();
+                    }).done();
+            });
+
+//            it('should return results from the middle', function(done) {
+//                var restApi = new RestApi();
+//                restApi.query({
+//                    type: 'defect',
+//                    start: 4,
+//                    pageSize: 2,
+//                    limit: 4
+//                }).then(function(result) {
+//                        result.Results.should.eql([4, 5, 6, 7]);
+//                        done();
+//                    }).done();
+//            });
+
+            it('should limit results to limit', function(done) {
+                var restApi = new RestApi();
+                restApi.query({
+                    type: 'defect',
+                    start: 1,
+                    pageSize: 100,
+                    limit: 4
+                }).then(function(result) {
+                        result.Results.should.eql([1, 2, 3, 4]);
+                        done();
+                    }).done();
+            });
+
+            it('should limit paged results to limit', function(done) {
+                var restApi = new RestApi();
+                restApi.query({
+                    type: 'defect',
+                    start: 1,
+                    pageSize: 3,
+                    limit: 5
+                }).then(function(result) {
+                        result.Results.should.eql([1, 2, 3, 4, 5]);
+                        done();
+                    }).done();
+            });
+        });
     });
 });
