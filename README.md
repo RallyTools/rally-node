@@ -22,7 +22,7 @@ npm install rally
 ```
 
 ## User Guide
-Please view the [Rally REST Toolkit for Node.js User Guide](https://github.com/krmorse/rally-node/wiki/User-Guide) in the attached wiki.
+Please view the [User Guide](https://github.com/krmorse/rally-node/wiki/User-Guide) in the attached wiki.
 
 ## Developer Guide
 Please view the [Developer Guide](https://github.com/krmorse/rally-node/wiki/Developer-Guide) in the attached wiki.
