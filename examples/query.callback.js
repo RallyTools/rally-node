@@ -2,25 +2,43 @@ var rally = require('..'),
     restApi = rally(),
     queryUtils = rally.util.query;
 
-function queryOpenDefects(callback) {
+function onError(error) {
+    console.log('Failure!', error);
+}
+
+function queryChildren(result) {
     restApi.query({
-        type: 'defect',
+        ref: result.Results[0].Children,
         start: 1,
-        pageSize: 1,
+        limit: Infinity,
+        order: 'Rank',
+        fetch: ['FormattedID', 'Name', 'ScheduleState']
+    }, function(error, result) {
+        if(error) {
+            onError(error);
+        } else {
+            console.log('Success!', result)
+        }
+    });
+}
+
+function queryEpicStories(callback) {
+    restApi.query({
+        type: 'hierarchicalrequirement',
+        start: 1,
+        pageSize: 2,
         limit: 10,
-        order: 'FormattedID',
-        fetch: ['FormattedID', 'Name', 'Priority', 'Severity'],
-        query: queryUtils.where('State', '=', 'Open')
-    }, callback);
+        order: 'Rank',
+        fetch: ['FormattedID', 'Name', 'ScheduleState', 'Children'],
+        query: queryUtils.where('DirectChildrenCount', '>', 0)
+    }, function(error, result) {
+        if(error) {
+            onError(error);
+        } else {
+            callback(result);
+        }
+    });
 }
 
-function processResults(error, result) {
-    if (error) {
-        console.log('Failure!', error);
-    } else {
-        console.log('Success!', result);
-    }
-}
-
-queryOpenDefects(processResults);
+queryEpicStories(queryChildren);
 

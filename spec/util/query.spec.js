@@ -9,6 +9,10 @@ describe('Query', function() {
             queryUtils.where('Name', 'contains', 'foo').toQueryString().should.eql('(Name contains foo)');
         });
 
+        it('should handle a query with a non-string value', function() {
+            queryUtils.where('DirectChildrenCount', '>', 0).toQueryString().should.eql('(DirectChildrenCount > 0)');
+        });
+
         it('should handle a null value', function() {
             queryUtils.where('Iteration', '=', null).toQueryString().should.eql('(Iteration = null)');
         });
