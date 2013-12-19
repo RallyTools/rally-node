@@ -80,6 +80,48 @@ describe('Request', function() {
                 err.should.eql([error]);
                 onSuccess.callCount.should.eql(0);
                 done();
+            }).done();
+        });
+
+        it('rejects the promise with an empty response', function(done) {
+            var rr = createRequest();
+            this.get.yieldsAsync(null, null);
+            var onSuccess = sinon.stub();
+            rr.doRequest('get', {url: '/someUrl'}).then(onSuccess, function(err) {
+                err.should.eql(['Unable to connect to server: ' + rr.wsapiUrl]);
+                onSuccess.callCount.should.eql(0);
+                done();
+            }).done();
+        });
+
+        it('calls back with error with an empty response', function(done) {
+            var rr = createRequest();
+            this.get.yieldsAsync(null, null);
+            rr.doRequest('get', {url: '/someUrl'}, function(err, body) {
+                err.should.eql(['Unable to connect to server: ' + rr.wsapiUrl]);
+                should.not.exist(body);
+                done();
+            });
+        });
+
+        it('rejects the promise with a non json response', function(done) {
+            var rr = createRequest();
+            this.get.yieldsAsync(null, {statusCode: 404}, 'not found!');
+            var onSuccess = sinon.stub();
+            rr.doRequest('get', {url: '/someUrl'}).then(onSuccess, function(err) {
+                err.should.eql(['/someUrl: 404! body=not found!']);
+                onSuccess.callCount.should.eql(0);
+                done();
+            }).done();
+        });
+
+        it('calls back with error with a non json response', function(done) {
+            var rr = createRequest();
+            this.get.yieldsAsync(null, {statusCode: 404}, 'not found!');
+            rr.doRequest('get', {url: '/someUrl'}, function(err, body) {
+                err.should.eql(['/someUrl: 404! body=not found!']);
+                should.not.exist(body);
+                done();
             });
         });
 
@@ -87,7 +129,7 @@ describe('Request', function() {
             var rr = createRequest();
             var error = 'Error!';
             var responseBody = {Result: {foo: 'bar', Errors: [error], Warnings: []}};
-            this.get.yieldsAsync(null, {statusCode: 200}, responseBody);
+            this.get.yieldsAsync(null, {}, responseBody);
             rr.doRequest('get', {url: '/someUrl'}, function(err, body) {
                 err.should.eql([error]);
                 should.not.exist(body);
@@ -99,19 +141,19 @@ describe('Request', function() {
             var rr = createRequest();
             var error = 'Error!';
             var responseBody = {Result: {foo: 'bar', Errors: [error], Warnings: []}};
-            this.get.yieldsAsync(null, {statusCode: 200}, responseBody);
+            this.get.yieldsAsync(null, {}, responseBody);
             var onSuccess = sinon.stub();
             rr.doRequest('get', {url: '/someUrl'}).then(onSuccess, function(err) {
                 err.should.eql([error]);
                 onSuccess.callCount.should.eql(0);
                 done();
-            });
+            }).done();
         });
 
         it('calls back with a success', function(done) {
             var rr = createRequest();
             var responseBody = {Result: {foo: 'bar', Errors: [], Warnings: []}};
-            this.get.yieldsAsync(null, {statusCode: 200}, responseBody);
+            this.get.yieldsAsync(null, {}, responseBody);
             rr.doRequest('get', {url: '/someUrl'}, function(err, body) {
                 should.not.exist(err);
                 body.should.eql(responseBody.Result);
@@ -122,16 +164,14 @@ describe('Request', function() {
         it('resolves the promise with a success', function(done) {
             var rr = createRequest();
             var responseBody = {Result: {foo: 'bar', Errors: [], Warnings: []}};
-            this.get.yieldsAsync(null, {statusCode: 200}, responseBody);
+            this.get.yieldsAsync(null, {}, responseBody);
             var onError = sinon.stub();
             rr.doRequest('get', {url: '/someUrl'}).then(function(result) {
                 result.should.eql(responseBody.Result);
                 onError.callCount.should.eql(0);
                 done();
-            }, onError);
+            }, onError).done();
         });
-
-        //todo: test for various other error conditions (status code, empty response, etc.)
     });
 
     describe('#doSecuredRequest', function() {
@@ -147,8 +187,8 @@ describe('Request', function() {
             var rr = createRequest();
             var token = 'a secret token';
             var putResponseBody = {OperationResult: {Errors: [], Warnings: [], Object: {}}};
-            this.get.yieldsAsync(null, {statusCode: 200}, {OperationResult: {Errors: [], Warnings: [], SecurityToken: token}});
-            this.put.yieldsAsync(null, {statusCode: 200}, putResponseBody);
+            this.get.yieldsAsync(null, {}, {OperationResult: {Errors: [], Warnings: [], SecurityToken: token}});
+            this.put.yieldsAsync(null, {}, putResponseBody);
             var self = this;
             rr.doSecuredRequest('put', {foo: 'bar'}, function(error, result) {
                 self.put.callCount.should.eql(1);
@@ -164,8 +204,8 @@ describe('Request', function() {
             var rr = createRequest();
             var token = 'a secret token';
             var putResponseBody = {OperationResult: {Errors: [], Warnings: [], Object: {}}};
-            this.get.yieldsAsync(null, {statusCode: 200}, {OperationResult: {Errors: [], Warnings: [], SecurityToken: token}});
-            this.put.yieldsAsync(null, {statusCode: 200}, putResponseBody);
+            this.get.yieldsAsync(null, {}, {OperationResult: {Errors: [], Warnings: [], SecurityToken: token}});
+            this.put.yieldsAsync(null, {}, putResponseBody);
             var onError = sinon.stub();
             var self = this;
             rr.doSecuredRequest('put', {foo: 'bar'}).then(function(result) {
@@ -175,25 +215,25 @@ describe('Request', function() {
                 putResponseBody.OperationResult.should.eql(result);
                 onError.callCount.should.eql(0);
                 done();
-            }, onError);
+            }, onError).done();
         });
 
         it('rejects the promise on security token failure', function(done) {
             var rr = createRequest();
             var error = 'Some key error';
-            this.get.yieldsAsync(null, {statusCode: 200}, {OperationResult: {Errors: [error]}});
+            this.get.yieldsAsync(null, {}, {OperationResult: {Errors: [error]}});
             var onSuccess = sinon.stub();
             rr.doSecuredRequest('put', {}).then(onSuccess, function(err) {
                 err.should.eql([error]);
                 onSuccess.callCount.should.eql(0);
                 done();
-            });
+            }).done();
         });
 
         it('calls back with error on security token failure', function(done) {
             var rr = createRequest();
             var error = 'Some key error';
-            this.get.yieldsAsync(null, {statusCode: 200}, {OperationResult: {Errors: [error]}});
+            this.get.yieldsAsync(null, {}, {OperationResult: {Errors: [error]}});
             rr.doSecuredRequest('put', {}, function(err, result) {
                 err.should.eql([error]);
                 should.not.exist(result);
@@ -205,22 +245,22 @@ describe('Request', function() {
             var rr = createRequest();
             var error = 'An error';
             var putResponseBody = {OperationResult: {Errors: [error]}};
-            this.get.yieldsAsync(null, {statusCode: 200}, {OperationResult: {Errors: [], Warnings: [], SecurityToken: 'foo'}});
-            this.put.yieldsAsync(null, {statusCode: 200}, putResponseBody);
+            this.get.yieldsAsync(null, {}, {OperationResult: {Errors: [], Warnings: [], SecurityToken: 'foo'}});
+            this.put.yieldsAsync(null, {}, putResponseBody);
             var onSuccess = sinon.stub();
             rr.doSecuredRequest('put', {}).then(onSuccess, function(err) {
                 err.should.eql([error]);
                 onSuccess.callCount.should.eql(0);
                 done();
-            });
+            }).done();
         });
 
         it('calls back with error on request failurepasses along the security token to doRequest and resolves the promise on success', function(done) {
             var rr = createRequest();
             var error = 'An error';
             var putResponseBody = {OperationResult: {Errors: [error]}};
-            this.get.yieldsAsync(null, {statusCode: 200}, {OperationResult: {Errors: [], Warnings: [], SecurityToken: 'foo'}});
-            this.put.yieldsAsync(null, {statusCode: 200}, putResponseBody);
+            this.get.yieldsAsync(null, {}, {OperationResult: {Errors: [], Warnings: [], SecurityToken: 'foo'}});
+            this.put.yieldsAsync(null, {}, putResponseBody);
             rr.doSecuredRequest('put', {}, function(err, result) {
                 err.should.eql([error]);
                 should.not.exist(result);
