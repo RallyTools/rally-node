@@ -1,5 +1,5 @@
 # Rally REST Toolkit for Node.js
-
+[![NPM](https://nodei.co/npm/rally.png?downloads=true&stars=true)](https://nodei.co/npm/rally/)  
 [![Build Status](https://travis-ci.org/krmorse/rally-node.png?branch=master)](https://travis-ci.org/krmorse/rally-node)
 
 ## License
