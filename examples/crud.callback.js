@@ -59,7 +59,7 @@ function updateDefect(result) {
 
 function deleteDefect(result) {
     console.log('Deleting defect...');
-    restApi.delete({
+    restApi.del({
         ref: result.Object
     }, function(error, result) {
         if(error) {

@@ -354,7 +354,7 @@ describe('Request', function() {
 
             var options = {foo: 'bar'};
             var callback = sinon.stub();
-            rr.delete(options, callback);
+            rr.del(options, callback);
 
             this.doSecuredRequest.callCount.should.eql(1);
             this.doSecuredRequest.firstCall.args.should.eql(['del', options, callback]);
@@ -364,7 +364,7 @@ describe('Request', function() {
             var rr = createRequest();
 
             var options = {foo: 'bar'};
-            var returnValue = rr.delete(options);
+            var returnValue = rr.del(options);
 
             this.doSecuredRequest.callCount.should.eql(1);
             this.doSecuredRequest.firstCall.args.should.eql(['del', options, null]);

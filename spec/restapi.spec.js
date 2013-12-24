@@ -11,14 +11,14 @@ describe('RestApi', function() {
         this.get = sinon.stub(request.Request.prototype, 'get').returns(Q());
         this.put = sinon.stub(request.Request.prototype, 'put').returns(Q());
         this.post = sinon.stub(request.Request.prototype, 'post').returns(Q());
-        this.delete = sinon.stub(request.Request.prototype, 'delete').returns(Q());
+        this.del = sinon.stub(request.Request.prototype, 'del').returns(Q());
     });
 
     afterEach(function() {
         this.get.restore();
         this.put.restore();
         this.post.restore();
-        this.delete.restore();
+        this.del.restore();
     });
 
     describe('#constructor', function() {
@@ -174,11 +174,11 @@ describe('RestApi', function() {
         });
     });
 
-    describe('#delete', function() {
+    describe('#del', function() {
 
         it('translates request options', function() {
             var restApi = new RestApi();
-            restApi.delete({
+            restApi.del({
                 ref: '/defect/1234',
                 scope: {workspace: '/workspace/1234'},
                 requestOptions: {
@@ -186,8 +186,8 @@ describe('RestApi', function() {
                 }
             });
 
-            this.delete.callCount.should.eql(1);
-            var args = this.delete.firstCall.args[0];
+            this.del.callCount.should.eql(1);
+            var args = this.del.firstCall.args[0];
             args.qs.workspace.should.eql('/workspace/1234');
             args.qs.foo.should.eql('bar');
         });
@@ -195,15 +195,15 @@ describe('RestApi', function() {
         it('generates correct del request', function() {
             var restApi = new RestApi();
             var callback = sinon.stub();
-            var promise = restApi.delete({
+            var promise = restApi.del({
                 ref: {_ref: '/defect/1234'}
             }, callback);
 
-            this.delete.callCount.should.eql(1);
-            var args = this.delete.firstCall.args;
+            this.del.callCount.should.eql(1);
+            var args = this.del.firstCall.args;
             args[0].url.should.eql('/defect/1234');
             args[1].should.be.exactly(callback);
-            this.delete.firstCall.returnValue.should.be.exactly(promise);
+            this.del.firstCall.returnValue.should.be.exactly(promise);
         });
     });
 
@@ -508,19 +508,6 @@ describe('RestApi', function() {
                         done();
                     }).done();
             });
-
-//            it('should return results from the middle', function(done) {
-//                var restApi = new RestApi();
-//                restApi.query({
-//                    type: 'defect',
-//                    start: 4,
-//                    pageSize: 2,
-//                    limit: 4
-//                }).then(function(result) {
-//                        result.Results.should.eql([4, 5, 6, 7]);
-//                        done();
-//                    }).done();
-//            });
 
             it('should limit results to limit', function(done) {
                 var restApi = new RestApi();

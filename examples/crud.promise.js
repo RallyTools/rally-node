@@ -37,7 +37,7 @@ function updateDefect(result) {
 function deleteDefect(result) {
     console.log('Defect updated:', result.Object.Name);
     console.log('Deleting defect...');
-    return restApi.delete({
+    return restApi.del({
         ref: result.Object
     });
 }
