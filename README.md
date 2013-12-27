@@ -1,6 +1,6 @@
 # Rally REST Toolkit for Node.js
 [![NPM](https://nodei.co/npm/rally.png?downloads=true&stars=true)](https://nodei.co/npm/rally/)  
-[![Build Status](https://travis-ci.org/krmorse/rally-node.png?branch=master)](https://travis-ci.org/krmorse/rally-node)
+[![Build Status](https://travis-ci.org/RallyTools/rally-node.png?branch=master)](https://travis-ci.org/RallyTools/rally-node)
 
 ## License
 
@@ -22,7 +22,7 @@ npm install rally
 ```
 
 ## User Guide
-Please view the [User Guide](https://github.com/krmorse/rally-node/wiki/User-Guide) in the attached wiki.
+Please view the [User Guide](https://github.com/RallyTools/rally-node/wiki/User-Guide) in the attached wiki.
 
 ## Developer Guide
-Please view the [Developer Guide](https://github.com/krmorse/rally-node/wiki/Developer-Guide) in the attached wiki.
+Please view the [Developer Guide](https://github.com/RallyTools/rally-node/wiki/Developer-Guide) in the attached wiki.
