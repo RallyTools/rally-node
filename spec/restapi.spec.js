@@ -81,10 +81,10 @@ describe('RestApi', function() {
             var restApi = new RestApi();
             var initArgs = request.init.firstCall.args[0];
             initArgs.requestOptions.headers.should.eql({
-                'X-RallyIntegrationLibrary': 'Rally REST Toolkit for Node.js v0.1.1',
+                'X-RallyIntegrationLibrary': 'Rally REST Toolkit for Node.js v0.1.2',
                 'X-RallyIntegrationName': 'Rally REST Toolkit for Node.js',
                 'X-RallyIntegrationVendor': 'Rally Software, Inc.',
-                'X-RallyIntegrationVersion': '0.1.1'
+                'X-RallyIntegrationVersion': '0.1.2'
             });
             restApi.request.should.be.exactly(request.init.firstCall.returnValue);
         });
@@ -494,6 +494,22 @@ describe('RestApi', function() {
                         result.Results.should.eql([1, 2, 3, 4, 5, 6]);
                         done();
                     }).done();
+            });
+
+            it('should call progress function for each page of multiple page call', function(done) {
+                var restApi = new RestApi();
+                var pagesReturned = 0;
+                restApi.query({
+                    type: 'defect',
+                    start: 1,
+                    pageSize: 2,
+                    limit: 6
+                }).progress(function(page){
+                      pagesReturned++;
+                }).done(function(){
+                      (pagesReturned).should.be.exactly(3);
+                      done();
+                    });
             });
 
             it('should return no more than TotalResultCount', function(done) {
