@@ -58,22 +58,20 @@ describe('RestApi', function() {
             requestOptions.jar.should.eql(true);
             requestOptions.auth.user.should.eql('user');
             requestOptions.auth.pass.should.eql('pass');
+            requestOptions.auth.sendImmediately.should.eql(false);
             restApi.request.should.be.exactly(request.init.firstCall.returnValue);
         });
 
         it('initializes request with specified auth options', function() {
             var restApi = new RestApi({
-                requestOptions: {
-                    auth: {
-                        user: 'user1',
-                        pass: 'pass1'
-                    }
-                }
+                user: 'user1',
+                pass: 'pass1'
             });
             var requestOptions = request.init.firstCall.args[0].requestOptions;
             requestOptions.jar.should.eql(true);
             requestOptions.auth.user.should.eql('user1');
             requestOptions.auth.pass.should.eql('pass1');
+            requestOptions.auth.sendImmediately.should.eql(false);
             restApi.request.should.be.exactly(request.init.firstCall.returnValue);
         });
 
@@ -81,11 +79,30 @@ describe('RestApi', function() {
             var restApi = new RestApi();
             var initArgs = request.init.firstCall.args[0];
             initArgs.requestOptions.headers.should.eql({
-                'X-RallyIntegrationLibrary': 'Rally REST Toolkit for Node.js v0.1.2',
+                'X-RallyIntegrationLibrary': 'Rally REST Toolkit for Node.js v0.1.3',
                 'X-RallyIntegrationName': 'Rally REST Toolkit for Node.js',
                 'X-RallyIntegrationVendor': 'Rally Software, Inc.',
-                'X-RallyIntegrationVersion': '0.1.2'
+                'X-RallyIntegrationVersion': '0.1.3'
             });
+            restApi.request.should.be.exactly(request.init.firstCall.returnValue);
+        });
+
+        it('initializes request with default api key options', function() {
+            var key = '!#$!@#%161345!%1346@#$^#$';
+            process.env.RALLY_API_KEY = key;
+            var restApi = new RestApi();
+            var requestOptions = request.init.firstCall.args[0].requestOptions;
+            requestOptions.headers.zsessionid.should.eql(key);
+            restApi.request.should.be.exactly(request.init.firstCall.returnValue);
+        });
+
+        it('initializes request with specified api key options', function() {
+            var key = '!#$!@#%161345!%1346@#$^#$';
+            var restApi = new RestApi({
+                apiKey: key
+            });
+            var requestOptions = request.init.firstCall.args[0].requestOptions;
+            requestOptions.headers.zsessionid.should.eql(key);
             restApi.request.should.be.exactly(request.init.firstCall.returnValue);
         });
     });
