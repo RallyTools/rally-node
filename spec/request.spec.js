@@ -176,6 +176,18 @@ describe('Request', function() {
 
     describe('#doSecuredRequest', function() {
 
+        it('does not request a security token if api key specified', function() {
+            var rr = createRequest({
+                requestOptions: {
+                    headers: {
+                        zsessionid: '!#$%!@#$@!#'
+                    }
+                }
+            });
+            rr.doSecuredRequest('put', {foo: 'bar'});
+            this.get.callCount.should.eql(0);
+        });
+
         it('requests a security token', function() {
             var rr = createRequest();
             rr.doSecuredRequest('put', {foo: 'bar'});
