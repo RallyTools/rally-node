@@ -93,6 +93,7 @@ describe('RestApi', function() {
             var restApi = new RestApi();
             var requestOptions = request.init.firstCall.args[0].requestOptions;
             requestOptions.headers.zsessionid.should.eql(key);
+            requestOptions.jar.should.eql(false);
             restApi.request.should.be.exactly(request.init.firstCall.returnValue);
         });
 
@@ -103,6 +104,7 @@ describe('RestApi', function() {
             });
             var requestOptions = request.init.firstCall.args[0].requestOptions;
             requestOptions.headers.zsessionid.should.eql(key);
+            requestOptions.jar.should.eql(false);
             restApi.request.should.be.exactly(request.init.firstCall.returnValue);
         });
     });
