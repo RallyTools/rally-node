@@ -1,6 +1,6 @@
 {
     "name": "rally",
-    "version": "0.1.4",
+    "version": "0.2.0",
     "description": "Rally REST Toolkit for Node.js",
     "contributors": [
         {
@@ -17,14 +17,14 @@
         "url": "https://github.com/RallyTools/rally-node.git"
     },
     "dependencies": {
-        "request": "2.29.x",
-        "q": "0.9.7",
+        "request": "2.51.x",
+        "q": "1.1.x",
         "lodash": "2.4.x"
     },
     "devDependencies": {
-        "mocha": "1.15.x",
-        "should": "2.1.x",
-        "sinon": "1.7.x"
+        "mocha": "1.21.x",
+        "should": "3.3.x",
+        "sinon": "1.12.x"
     },
     "author": "Kyle Morse",
     "license": "MIT",

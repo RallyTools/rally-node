@@ -79,10 +79,10 @@ describe('RestApi', function() {
             var restApi = new RestApi();
             var initArgs = request.init.firstCall.args[0];
             initArgs.requestOptions.headers.should.eql({
-                'X-RallyIntegrationLibrary': 'Rally REST Toolkit for Node.js v0.1.4',
+                'X-RallyIntegrationLibrary': 'Rally REST Toolkit for Node.js v0.2.0',
                 'X-RallyIntegrationName': 'Rally REST Toolkit for Node.js',
                 'X-RallyIntegrationVendor': 'Rally Software, Inc.',
-                'X-RallyIntegrationVersion': '0.1.4'
+                'X-RallyIntegrationVersion': '0.2.0'
             });
             restApi.request.should.be.exactly(request.init.firstCall.returnValue);
         });
@@ -481,11 +481,14 @@ describe('RestApi', function() {
             }
             beforeEach(function() {
                 this.get.restore();
-                this.get = sinon.stub(request.Request.prototype, 'get', function(options) {
+                sinon.stub(request.Request.prototype, 'get', function(options) {
                     var start = options.qs.start,
                         pageSize = options.qs.pagesize;
                     return Q({Errors: [], Warnings: [], StartIndex: start, TotalResultCount: results.length, Results: results.slice(start - 1, start - 1 + pageSize)});
                 });
+            });
+            afterEach(function(){
+                request.Request.prototype.get.restore();
             });
 
             it('should return 1 page if no limit specified', function(done) {
