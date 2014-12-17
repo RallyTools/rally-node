@@ -573,5 +573,205 @@ describe('RestApi', function() {
                     }).done();
             });
         });
+
+        describe('add', function() {
+            it('translates request options', function() {
+                var restApi = new RestApi();
+                restApi.add({
+                    ref: '/defect/1234',
+                    data: [{_ref: '/defect/2345'}],
+                    collection: 'Duplicates',
+                    scope: {workspace: '/workspace/1234'},
+                    fetch: ['FormattedID'],
+                    requestOptions: {
+                        qs: {foo: 'bar'}
+                    }
+                });
+
+                this.post.callCount.should.eql(1);
+                var args = this.post.firstCall.args[0];
+                args.qs.workspace.should.eql('/workspace/1234');
+                args.qs.fetch.should.eql('FormattedID');
+                args.qs.foo.should.eql('bar');
+            });
+
+            it('generates correct post request', function() {
+                var restApi = new RestApi();
+                var callback = sinon.stub();
+                restApi.add({
+                    ref: '/defect/1234',
+                    data: [{_ref: '/defect/2345'}],
+                    collection: 'Duplicates'
+                }, callback);
+
+                this.post.callCount.should.eql(1);
+                var args = this.post.firstCall.args;
+                args[0].url.should.eql('/defect/1234/Duplicates/add');
+                args[0].json.should.eql({CollectionItems: [{_ref: '/defect/2345'}]});
+            });
+
+            it('calls back with result', function(done) {
+                this.post.yieldsAsync(null, {Errors: [], Warnings: [], Results: [{_ref: '/defect/2345'}]});
+                var restApi = new RestApi();
+                restApi.add({
+                    ref: '/defect/1234',
+                    data: [{_ref: '/defect/2345'}],
+                    collection: 'Duplicates'
+                }, function(error, result) {
+                    should.not.exist(error);
+                    result.Errors.should.eql([]);
+                    result.Warnings.should.eql([]);
+                    result.Results.should.eql([{_ref: '/defect/2345'}]);
+                    done();
+                });
+            });
+
+            it('resolves promise with result', function(done) {
+                this.post.yieldsAsync(null, {Errors: [], Warnings: [], Results: [{_ref: '/defect/2345'}]});
+                var restApi = new RestApi();
+                var onError = sinon.stub();
+                restApi.add({
+                    ref: '/defect/1234',
+                    data: [{_ref: '/defect/2345'}],
+                    collection: 'Duplicates'
+                }).then(function(result) {
+                    onError.callCount.should.eql(0);
+                    result.Errors.should.eql([]);
+                    result.Warnings.should.eql([]);
+                    result.Results.should.eql([{_ref: '/defect/2345'}]);
+                    done();
+                }, onError).done();
+            });
+
+            it('calls back with error', function(done) {
+                var error = 'Error!';
+                this.post.yieldsAsync([error], null);
+                var restApi = new RestApi();
+                restApi.add({
+                    ref: '/defect/1234',
+                    data: [{_ref: '/defect/2345'}],
+                    collection: 'Duplicates'
+                }, function(err, result) {
+                    err.should.eql([error]);
+                    should.not.exist(result);
+                    done();
+                });
+            });
+
+            it('rejects promise with error', function(done) {
+                var error = 'Error!';
+                this.post.yieldsAsync([error], null);
+                var restApi = new RestApi();
+                var onSuccess = sinon.stub();
+                restApi.add({
+                    ref: '/defect/1234',
+                    data: [{_ref: '/defect/2345'}],
+                    collection: 'Duplicates'
+                }).then(onSuccess, function(err) {
+                    onSuccess.callCount.should.eql(0);
+                    err.should.eql([error]);
+                    done();
+                }).done();
+            });
+        });
+
+        describe('remove', function() {
+            it('translates request options', function() {
+                var restApi = new RestApi();
+                restApi.remove({
+                    ref: '/defect/1234',
+                    data: [{_ref: '/defect/2345'}],
+                    collection: 'Duplicates',
+                    scope: {workspace: '/workspace/1234'},
+                    fetch: ['FormattedID'],
+                    requestOptions: {
+                        qs: {foo: 'bar'}
+                    }
+                });
+
+                this.post.callCount.should.eql(1);
+                var args = this.post.firstCall.args[0];
+                args.qs.workspace.should.eql('/workspace/1234');
+                args.qs.fetch.should.eql('FormattedID');
+                args.qs.foo.should.eql('bar');
+            });
+
+            it('generates correct post request', function() {
+                var restApi = new RestApi();
+                var callback = sinon.stub();
+                restApi.remove({
+                    ref: '/defect/1234',
+                    data: [{_ref: '/defect/2345'}],
+                    collection: 'Duplicates'
+                }, callback);
+
+                this.post.callCount.should.eql(1);
+                var args = this.post.firstCall.args;
+                args[0].url.should.eql('/defect/1234/Duplicates/remove');
+                args[0].json.should.eql({CollectionItems: [{_ref: '/defect/2345'}]});
+            });
+
+            it('calls back with result', function(done) {
+                this.post.yieldsAsync(null, {Errors: [], Warnings: []});
+                var restApi = new RestApi();
+                restApi.remove({
+                    ref: '/defect/1234',
+                    data: [{_ref: '/defect/2345'}],
+                    collection: 'Duplicates'
+                }, function(error, result) {
+                    should.not.exist(error);
+                    result.Errors.should.eql([]);
+                    result.Warnings.should.eql([]);
+                    done();
+                });
+            });
+
+            it('resolves promise with result', function(done) {
+                this.post.yieldsAsync(null, {Errors: [], Warnings: []});
+                var restApi = new RestApi();
+                var onError = sinon.stub();
+                restApi.remove({
+                    ref: '/defect/1234',
+                    data: [{_ref: '/defect/2345'}],
+                    collection: 'Duplicates'
+                }).then(function(result) {
+                    onError.callCount.should.eql(0);
+                    result.Errors.should.eql([]);
+                    result.Warnings.should.eql([]);
+                    done();
+                }, onError).done();
+            });
+
+            it('calls back with error', function(done) {
+                var error = 'Error!';
+                this.post.yieldsAsync([error], null);
+                var restApi = new RestApi();
+                restApi.remove({
+                    ref: '/defect/1234',
+                    data: [{_ref: '/defect/2345'}],
+                    collection: 'Duplicates'
+                }, function(err, result) {
+                    err.should.eql([error]);
+                    should.not.exist(result);
+                    done();
+                });
+            });
+
+            it('rejects promise with error', function(done) {
+                var error = 'Error!';
+                this.post.yieldsAsync([error], null);
+                var restApi = new RestApi();
+                var onSuccess = sinon.stub();
+                restApi.remove({
+                    ref: '/defect/1234',
+                    data: [{_ref: '/defect/2345'}],
+                    collection: 'Duplicates'
+                }).then(onSuccess, function(err) {
+                    onSuccess.callCount.should.eql(0);
+                    err.should.eql([error]);
+                    done();
+                }).done();
+            });
+        });
     });
 });
