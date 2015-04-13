@@ -141,13 +141,11 @@ describe('RestApi', function() {
                     Name: 'A defect'
                 }
             }, callback);
-
+						
             this.post.callCount.should.eql(1);
             var args = this.post.firstCall.args;
             args[0].url.should.eql('/defect/create');
             args[0].json.should.eql({defect: {Name: 'A defect'}});
-            args[1].should.be.exactly(callback);
-            this.post.firstCall.returnValue.should.be.exactly(promise);
         });
     });
 
@@ -188,8 +186,6 @@ describe('RestApi', function() {
             var args = this.put.firstCall.args;
             args[0].url.should.eql('/defect/1234');
             args[0].json.should.eql({defect: {Name: 'Updated defect'}});
-            args[1].should.be.exactly(callback);
-            this.put.firstCall.returnValue.should.be.exactly(promise);
         });
     });
 
@@ -221,8 +217,6 @@ describe('RestApi', function() {
             this.del.callCount.should.eql(1);
             var args = this.del.firstCall.args;
             args[0].url.should.eql('/defect/1234');
-            args[1].should.be.exactly(callback);
-            this.del.firstCall.returnValue.should.be.exactly(promise);
         });
     });
 
