@@ -1,6 +1,6 @@
-var rally = require('..'),
-    restApi = rally(),
-    queryUtils = rally.util.query;
+const rally = require('..');
+const restApi = rally();
+const queryUtils = rally.util.query;
 
 function onError(error) {
     console.log('Failure!', error);
@@ -32,7 +32,7 @@ function queryEpicStories(callback) {
         fetch: ['FormattedID', 'Name', 'ScheduleState', 'Children'],
         query: queryUtils.where('DirectChildrenCount', '>', 0)
     }, function(error, result) {
-        if(error) {
+        if (error) {
             onError(error);
         } else {
             callback(result);
@@ -41,4 +41,3 @@ function queryEpicStories(callback) {
 }
 
 queryEpicStories(queryChildren);
-

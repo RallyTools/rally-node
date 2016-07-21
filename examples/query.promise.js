@@ -1,3 +1,5 @@
+// NOTE: Environment variable RALLY_API_KEY (or RALLY_USERNAME and RALLY_PASSWORD)
+// must be defined to actually run this example
 var rally = require('..'),
     queryUtils = rally.util.query,
     restApi = rally();
@@ -18,7 +20,7 @@ function queryChildren(result) {
     return restApi.query({
         ref: result.Results[0].Children,
         start: 1,
-        limit: Infinity,
+        limit: 200,
         order: 'Rank',
         fetch: ['FormattedID', 'Name', 'ScheduleState']
     });
@@ -35,4 +37,4 @@ function onError(errors) {
 queryEpicStories()
     .then(queryChildren)
     .then(onSuccess)
-    .fail(onError);
+    .catch(onError);

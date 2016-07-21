@@ -1,3 +1,5 @@
+// NOTE: Environment variable RALLY_API_KEY (or RALLY_USERNAME and RALLY_PASSWORD)
+// must be defined to actually run this example
 var rally = require('..'),
     restApi = rally(),
     refUtils = rally.util.ref;
@@ -55,4 +57,4 @@ createDefect()
     .then(updateDefect)
     .then(deleteDefect)
     .then(onSuccess)
-    .fail(onError);
+    .catch(onError);

@@ -1,0 +1,14 @@
+{
+  "extends": "eslint:recommended",
+
+  "parser": "babel-eslint",
+
+  "env": {
+    "node": true,
+    "jasmine" : true
+  },
+
+  "globals": {
+    "Promise": true
+  }
+}
