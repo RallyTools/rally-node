@@ -1,6 +1,6 @@
-var rally = require('..'),
-    restApi = rally(),
-    refUtils = rally.util.ref;
+const rally = require('..');
+const restApi = rally();
+const refUtils = rally.util.ref;
 
 function onError(errors) {
     console.log('Failure!', errors);
