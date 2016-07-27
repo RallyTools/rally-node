@@ -75,10 +75,10 @@ describe('RestApi', () => {
       const restApi = new RestApi();
       const initArgs = Request.default.firstCall.args[0];
       initArgs.requestOptions.headers.should.eql({
-        'X-RallyIntegrationLibrary': 'Rally REST Toolkit for Node.js v1.0.0',
+        'X-RallyIntegrationLibrary': 'Rally REST Toolkit for Node.js v1.1.0',
         'X-RallyIntegrationName': 'Rally REST Toolkit for Node.js',
         'X-RallyIntegrationVendor': 'Rally Software, Inc.',
-        'X-RallyIntegrationVersion': '1.0.0'
+        'X-RallyIntegrationVersion': '1.1.0'
       });
       restApi.request.should.be.exactly(Request.default.firstCall.returnValue);
     });
