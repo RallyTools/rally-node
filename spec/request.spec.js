@@ -66,7 +66,7 @@ describe('Request', () => {
       const error = 'Error!';
       get.yieldsAsync(error);
       rr.doRequest('get', {url: '/someUrl'}, (err, body) => {
-        err.should.eql([error]);
+        err.errors.should.eql([error]);
         should.not.exist(body);
         done();
       });
@@ -80,7 +80,7 @@ describe('Request', () => {
         await rr.doRequest('get', {url: '/someUrl'});
         fail('expected promise to be rejected');
       } catch (err) {
-        err.should.eql([error]);
+        err.errors.should.eql([error]);
         done();
       }
     });
@@ -89,7 +89,7 @@ describe('Request', () => {
         const rr = createRequest();
         get.yieldsAsync(null, null);
         rr.doRequest('get', {url: '/someUrl'}, (err, body) => {
-          err.should.eql(['Unable to connect to server: ' + rr.wsapiUrl]);
+          err.errors.should.eql(['Unable to connect to server: ' + rr.wsapiUrl]);
           should.not.exist(body);
           done();
         });
@@ -102,7 +102,7 @@ describe('Request', () => {
         await rr.doRequest('get', {url: '/someUrl'});
         fail('expected promise to be rejected');
       } catch (err) {
-        err.should.eql(['Unable to connect to server: ' + rr.wsapiUrl]);
+        err.errors.should.eql(['Unable to connect to server: ' + rr.wsapiUrl]);
         done();
       }
     });
@@ -111,7 +111,7 @@ describe('Request', () => {
       const rr = createRequest();
       get.yieldsAsync(null, {statusCode: 404}, 'not found!');
       rr.doRequest('get', {url: '/someUrl'}, (err, body) => {
-        err.should.eql(['/someUrl: 404! body=not found!']);
+        err.errors.should.eql(['/someUrl: 404! body=not found!']);
         should.not.exist(body);
         done();
       });
@@ -124,7 +124,7 @@ describe('Request', () => {
         await rr.doRequest('get', {url: '/someUrl'});
         fail('expected promise to be rejected');
       } catch (err) {
-        err.should.eql(['/someUrl: 404! body=not found!']);
+        err.errors.should.eql(['/someUrl: 404! body=not found!']);
         done();
       }
     });
@@ -138,7 +138,7 @@ describe('Request', () => {
         await rr.doRequest('get', {url: '/someUrl'});
         fail('expected promise to be rejected');
       } catch (err) {
-        err.should.eql([error]);
+        err.errors.should.eql([error]);
         done();
       }
     });
@@ -220,7 +220,7 @@ describe('Request', () => {
       const error = 'Some key error';
       get.yieldsAsync(null, {}, {OperationResult: {Errors: [error]}});
       rr.doSecuredRequest('put', {}, function(err, result) {
-        err.should.eql([error]);
+        err.errors.should.eql([error]);
         should.not.exist(result);
         done();
       });
@@ -233,7 +233,7 @@ describe('Request', () => {
       try {
         await rr.doSecuredRequest('put', {});
       } catch (err) {
-        err.should.eql([error]);
+        err.errors.should.eql([error]);
         done();
       }
     });
@@ -248,7 +248,7 @@ describe('Request', () => {
         await rr.doSecuredRequest('put', {});
         fail('promise should be rejected');
       } catch (err) {
-        err.should.eql([error]);
+        err.errors.should.eql([error]);
       }
       done();
     });
@@ -260,7 +260,7 @@ describe('Request', () => {
       get.yieldsAsync(null, {}, {OperationResult: {Errors: [], Warnings: [], SecurityToken: 'foo'}});
       put.yieldsAsync(null, {}, putResponseBody);
       rr.doSecuredRequest('put', {}, function(err, result) {
-        err.should.eql([error]);
+        err.errors.should.eql([error]);
         should.not.exist(result);
         done();
       });

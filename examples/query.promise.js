@@ -30,8 +30,8 @@ function onSuccess(result) {
     console.log('Success!', result);
 }
 
-function onError(errors) {
-    console.log('Failure!', errors);
+function onError(error) {
+    console.log('Failure!', error.message, error.errors);
 }
 
 queryEpicStories()

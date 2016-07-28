@@ -3,7 +3,7 @@ const restApi = rally();
 const queryUtils = rally.util.query;
 
 function onError(error) {
-    console.log('Failure!', error);
+    console.log('Failure!', error.message, error.errors);
 }
 
 function queryChildren(result) {
