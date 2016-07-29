@@ -2,8 +2,8 @@ const rally = require('..');
 const restApi = rally();
 const refUtils = rally.util.ref;
 
-function onError(errors) {
-    console.log('Failure!', errors);
+function onError(error) {
+    console.log('Failure!', error.message, error.errors);
 }
 
 function createDefect() {
