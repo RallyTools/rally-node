@@ -1,10 +1,9 @@
 {
   "plugins": [
-    "transform-runtime",
-    ["transform-es2015-classes"]
+    "transform-runtime"
   ],
   "presets" : [
-    "es2015",
+    "latest",
     "stage-1"
   ],
   "env": {
