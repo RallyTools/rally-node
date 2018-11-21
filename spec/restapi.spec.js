@@ -108,7 +108,7 @@ describe('RestApi', () => {
 
   describe('#create', () => {
 
-    it('translates request options', async (done) => {
+    it('translates request options', async ( ) => {
       const restApi = new RestApi();
       await restApi.create({
         type: 'defect',
@@ -127,10 +127,10 @@ describe('RestApi', () => {
       args.qs.fetch.should.eql('FormattedID');
       args.qs.workspace.should.eql('/workspace/1234');
       args.qs.foo.should.eql('bar');
-      done();
+       
     });
 
-    it('generates correct post request', async (done) => {
+    it('generates correct post request', async ( ) => {
       const restApi = new RestApi();
       const callback = sinon.stub();
       const promise = restApi.create({
@@ -147,13 +147,13 @@ describe('RestApi', () => {
       args[1].should.be.exactly(callback);
       post.firstCall.returnValue.should.be.exactly(promise);
       await promise;
-      done();
+       
     });
   });
 
   describe('#update', () => {
 
-    it('translates request options', async (done) => {
+    it('translates request options', async ( ) => {
       const restApi = new RestApi();
       await restApi.update({
         ref: '/defect/1234',
@@ -172,10 +172,10 @@ describe('RestApi', () => {
       args.qs.fetch.should.eql('FormattedID');
       args.qs.workspace.should.eql('/workspace/1234');
       args.qs.foo.should.eql('bar');
-      done();
+       
     });
 
-    it('generates correct put request', async (done) => {
+    it('generates correct put request', async ( ) => {
       const restApi = new RestApi();
       const callback = sinon.stub();
       const promise = restApi.update({
@@ -192,13 +192,13 @@ describe('RestApi', () => {
       args[1].should.be.exactly(callback);
       put.firstCall.returnValue.should.be.exactly(promise);
       await promise;
-      done();
+       
     });
   });
 
   describe('#del', () => {
 
-    it('translates request options', async (done) => {
+    it('translates request options', async ( ) => {
       const restApi = new RestApi();
       await restApi.del({
         ref: '/defect/1234',
@@ -212,10 +212,10 @@ describe('RestApi', () => {
       const args = del.firstCall.args[0];
       args.qs.workspace.should.eql('/workspace/1234');
       args.qs.foo.should.eql('bar');
-      done();
+       
     });
 
-    it('generates correct del request', async (done) => {
+    it('generates correct del request', async ( ) => {
       const restApi = new RestApi();
       const callback = sinon.stub();
       const promise = restApi.del({
@@ -228,13 +228,13 @@ describe('RestApi', () => {
       args[1].should.be.exactly(callback);
       del.firstCall.returnValue.should.be.exactly(promise);
       await promise;
-      done();
+       
     });
   });
 
   describe('#get', () => {
 
-    it('translates request options', async (done) => {
+    it('translates request options', async ( ) => {
       const restApi = new RestApi();
       await restApi.get({
         ref: '/defect/1234',
@@ -250,10 +250,10 @@ describe('RestApi', () => {
       args.qs.workspace.should.eql('/workspace/1234');
       args.qs.fetch.should.eql('FormattedID');
       args.qs.foo.should.eql('bar');
-      done();
+       
     });
 
-    it('generates correct get request', async (done) => {
+    it('generates correct get request', async ( ) => {
       const restApi = new RestApi();
       const callback = sinon.stub();
       await restApi.get({
@@ -264,10 +264,10 @@ describe('RestApi', () => {
       const args = get.firstCall.args;
       args[0].url.should.eql('/defect/1234');
       callback.callCount.should.eql(1);
-      done();
+       
     });
 
-    it('calls back with transformed result', (done) => {
+    it('calls back with transformed result', ( ) => {
       const restApi = new RestApi();
       get.returns(Promise.resolve({Errors: [], Warnings: [], Name: 'Foo'}));
       restApi.get({
@@ -277,11 +277,11 @@ describe('RestApi', () => {
         result.Errors.should.eql([]);
         result.Warnings.should.eql([]);
         result.Object.should.eql({Name: 'Foo'});
-        done();
+         
       });
     });
 
-    it('resolves promise with transformed result', async (done) => {
+    it('resolves promise with transformed result', async ( ) => {
       get.returns(Promise.resolve({Errors: [], Warnings: [], Name: 'Foo'}));
       const restApi = new RestApi();
       const result = await restApi.get({
@@ -290,10 +290,10 @@ describe('RestApi', () => {
       result.Errors.should.eql([]);
       result.Warnings.should.eql([]);
       result.Object.should.eql({Name: 'Foo'});
-      done();
+       
     });
 
-    it('calls back with error', (done) => {
+    it('calls back with error', ( ) => {
         const error = 'Error!';
         const restApi = new RestApi();
         get.returns(Promise.reject([error]));
@@ -302,11 +302,11 @@ describe('RestApi', () => {
         }, (err, result) => {
           err.should.eql([error]);
           should.not.exist(result);
-          done();
+           
         });
     });
 
-    it('rejects promise with error', async (done) => {
+    it('rejects promise with error', async ( ) => {
       const error = 'Error!';
       get.returns(Promise.reject([error]));
       const restApi = new RestApi();
@@ -317,14 +317,14 @@ describe('RestApi', () => {
         fail('promise should be rejected');
       } catch (err) {
         err.should.eql([error]);
-        done();
+         
       }
     });
   });
 
   describe('#query', () => {
 
-    it('translates workspace scope request options', async (done) => {
+    it('translates workspace scope request options', async ( ) => {
       const restApi = new RestApi();
       await restApi.query({
         type: '/defect',
@@ -340,10 +340,10 @@ describe('RestApi', () => {
       args.qs.workspace.should.eql('/workspace/1234');
       args.qs.fetch.should.eql('FormattedID');
       args.qs.foo.should.eql('bar');
-      done();
+       
     });
 
-    it('translates project scope request options', async (done) => {
+    it('translates project scope request options', async ( ) => {
       const restApi = new RestApi();
       await restApi.query({
         type: '/defect',
@@ -361,10 +361,10 @@ describe('RestApi', () => {
       args.qs.projectScopeDown.should.eql(true);
       args.qs.fetch.should.eql('FormattedID');
       args.qs.foo.should.eql('bar');
-      done();
+       
     });
 
-    it('translates paging scope request options', async (done) => {
+    it('translates paging scope request options', async ( ) => {
       const restApi = new RestApi();
       await restApi.query({
         type: '/defect',
@@ -382,10 +382,10 @@ describe('RestApi', () => {
       args.qs.pagesize.should.eql(10);
       args.qs.order.should.eql('Severity,FormattedID DESC');
       args.qs.foo.should.eql('bar');
-      done();
+       
     });
 
-    it('translates query request options', async (done) => {
+    it('translates query request options', async ( ) => {
       const restApi = new RestApi();
       const query = where('State', '=', 'Submitted');
       await restApi.query({
@@ -400,7 +400,7 @@ describe('RestApi', () => {
       const args = get.firstCall.args[0];
       args.qs.query.should.eql(query.toQueryString());
       args.qs.foo.should.eql('bar');
-      done();
+       
     });
 
     it('generates correct get request by type', () => {
@@ -425,7 +425,7 @@ describe('RestApi', () => {
       args[0].url.should.eql('/defect/1234/tasks');
     });
 
-    it('calls back with results', (done) => {
+    it('calls back with results', ( ) => {
         const results = [
             {Name: 'Foo'}
         ];
@@ -438,11 +438,11 @@ describe('RestApi', () => {
           result.Errors.should.eql([]);
           result.Warnings.should.eql([]);
           result.Results.should.eql(results);
-          done();
+           
         });
     });
 
-    it('resolves promise with results', async (done) => {
+    it('resolves promise with results', async ( ) => {
       const results = [
         {Name: 'Foo'}
       ];
@@ -456,10 +456,10 @@ describe('RestApi', () => {
       result.Errors.should.eql([]);
       result.Warnings.should.eql([]);
       result.Results.should.eql(results);
-      done();
+       
     });
 
-    it('calls back with error', function(done) {
+    it('calls back with error', function( ) {
       const error = 'Error!';
       const restApi = new RestApi();
       get.returns(Promise.reject([error]));
@@ -468,11 +468,11 @@ describe('RestApi', () => {
       }, (err, result) => {
         err.should.eql([error]);
         should.not.exist(result);
-        done();
+         
       });
     });
 
-    it('rejects promise with error', async (done) => {
+    it('rejects promise with error', async ( ) => {
       const error = 'Error!';
       get.returns(Promise.reject([error]));
       const restApi = new RestApi();
@@ -483,7 +483,7 @@ describe('RestApi', () => {
         fail('promise should be rejected');
       } catch (err) {
         err.should.eql([error]);
-        done();
+         
       }
     });
 
@@ -502,7 +502,7 @@ describe('RestApi', () => {
         Request.default.prototype.get.restore();
       });
 
-      it('should return 1 page if no limit specified', async (done) => {
+      it('should return 1 page if no limit specified', async ( ) => {
         const restApi = new RestApi();
         const result = await restApi.query({
           type: 'defect',
@@ -510,10 +510,10 @@ describe('RestApi', () => {
           pageSize: 2
         });
         result.Results.should.eql([1, 2]);
-        done();
+         
       });
 
-      it('should return multiple pages if limit specified', async (done) => {
+      it('should return multiple pages if limit specified', async ( ) => {
         const restApi = new RestApi();
         const result = await restApi.query({
           type: 'defect',
@@ -522,10 +522,10 @@ describe('RestApi', () => {
           limit: 6
         });
         result.Results.should.eql([1, 2, 3, 4, 5, 6]);
-        done();
+         
       });
 
-      it('should return no more than TotalResultCount', async (done) => {
+      it('should return no more than TotalResultCount', async ( ) => {
         const restApi = new RestApi();
         const result = await restApi.query({
           type: 'defect',
@@ -534,10 +534,10 @@ describe('RestApi', () => {
           limit: 100
         });
         result.Results.should.eql(results);
-        done();
+         
       });
 
-      it('should limit results to limit', async (done) => {
+      it('should limit results to limit', async ( ) => {
         const restApi = new RestApi();
         const result = await restApi.query({
           type: 'defect',
@@ -546,10 +546,10 @@ describe('RestApi', () => {
           limit: 4
         });
         result.Results.should.eql([1, 2, 3, 4]);
-        done();
+         
       });
 
-      it('should limit paged results to limit', async (done) => {
+      it('should limit paged results to limit', async ( ) => {
         const restApi = new RestApi();
         const result = await restApi.query({
           type: 'defect',
@@ -558,12 +558,12 @@ describe('RestApi', () => {
           limit: 5
         });
         result.Results.should.eql([1, 2, 3, 4, 5]);
-        done();
+         
       });
     });
 
     describe('add', () => {
-      it('translates request options', async (done) => {
+      it('translates request options', async ( ) => {
         const restApi = new RestApi();
         await restApi.add({
           ref: '/defect/1234',
@@ -581,10 +581,10 @@ describe('RestApi', () => {
         args.qs.workspace.should.eql('/workspace/1234');
         args.qs.fetch.should.eql('FormattedID');
         args.qs.foo.should.eql('bar');
-        done();
+         
       });
 
-      it('generates correct post request', async (done) => {
+      it('generates correct post request', async ( ) => {
         const restApi = new RestApi();
         await restApi.add({
           ref: '/defect/1234',
@@ -596,10 +596,10 @@ describe('RestApi', () => {
         const args = post.firstCall.args;
         args[0].url.should.eql('/defect/1234/Duplicates/add');
         args[0].json.should.eql({CollectionItems: [{_ref: '/defect/2345'}]});
-        done();
+         
       });
 
-      it('resolves promise with result', async (done) => {
+      it('resolves promise with result', async ( ) => {
         post.returns(Promise.resolve({Errors: [], Warnings: [], Results: [{_ref: '/defect/2345'}]}));
         const restApi = new RestApi();
         const result = await restApi.add({
@@ -610,10 +610,10 @@ describe('RestApi', () => {
         result.Errors.should.eql([]);
         result.Warnings.should.eql([]);
         result.Results.should.eql([{_ref: '/defect/2345'}]);
-        done();
+         
       });
 
-      it('rejects promise with error', async (done) => {
+      it('rejects promise with error', async ( ) => {
         const error = 'Error!';
         post.returns(Promise.reject([error]));
         const restApi = new RestApi();
@@ -626,7 +626,7 @@ describe('RestApi', () => {
           fail('promise should be rejected');
         } catch (err) {
           err.should.eql([error]);
-          done();
+           
         }
       });
     });
@@ -667,7 +667,7 @@ describe('RestApi', () => {
         args[0].json.should.eql({CollectionItems: [{_ref: '/defect/2345'}]});
       });
 
-      it('resolves promise with result', async (done) => {
+      it('resolves promise with result', async ( ) => {
         post.returns(Promise.resolve({Errors: [], Warnings: []}));
         const restApi = new RestApi();
         const result = await restApi.remove({
@@ -677,10 +677,10 @@ describe('RestApi', () => {
         });
         result.Errors.should.eql([]);
         result.Warnings.should.eql([]);
-        done();
+         
       });
 
-      it('rejects promise with error', async (done) => {
+      it('rejects promise with error', async ( ) => {
         const error = 'Error!';
         post.returns(Promise.reject([error]));
         const restApi = new RestApi();
@@ -693,7 +693,7 @@ describe('RestApi', () => {
           fail('promise should be rejected');
         } catch (err) {
           err.should.eql([error]);
-          done();
+           
         }
       });
     });

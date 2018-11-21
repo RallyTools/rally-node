@@ -61,18 +61,18 @@ describe('Request', () => {
       args.foo.should.eql('bar');
     });
 
-    it('calls back with an error', (done) => {
+    it('calls back with an error', ( ) => {
       const rr = createRequest();
       const error = 'Error!';
       get.yieldsAsync(error);
       rr.doRequest('get', {url: '/someUrl'}, (err, body) => {
         err.errors.should.eql([error]);
         should.not.exist(body);
-        done();
+         
       });
     });
 
-    it('rejects the promise with an error', async (done) => {
+    it('rejects the promise with an error', async ( ) => {
       const rr = createRequest();
       const error = 'Error!';
       get.yieldsAsync(error);
@@ -81,21 +81,21 @@ describe('Request', () => {
         fail('expected promise to be rejected');
       } catch (err) {
         err.errors.should.eql([error]);
-        done();
+         
       }
     });
 
-    it('calls back with error with an empty response', (done) => {
+    it('calls back with error with an empty response', ( ) => {
         const rr = createRequest();
         get.yieldsAsync(null, null);
         rr.doRequest('get', {url: '/someUrl'}, (err, body) => {
           err.errors.should.eql(['Unable to connect to server: ' + rr.wsapiUrl]);
           should.not.exist(body);
-          done();
+           
         });
       });
 
-    it('rejects the promise with an empty response', async (done) => {
+    it('rejects the promise with an empty response', async ( ) => {
       const rr = createRequest();
       get.yieldsAsync(null, null);
       try {
@@ -103,21 +103,21 @@ describe('Request', () => {
         fail('expected promise to be rejected');
       } catch (err) {
         err.errors.should.eql(['Unable to connect to server: ' + rr.wsapiUrl]);
-        done();
+         
       }
     });
 
-    it('calls back with error with a non json response', (done) => {
+    it('calls back with error with a non json response', ( ) => {
       const rr = createRequest();
       get.yieldsAsync(null, {statusCode: 404}, 'not found!');
       rr.doRequest('get', {url: '/someUrl'}, (err, body) => {
         err.errors.should.eql(['/someUrl: 404! body=not found!']);
         should.not.exist(body);
-        done();
+         
       });
     });
 
-    it('rejects the promise with a non json response', async (done) => {
+    it('rejects the promise with a non json response', async ( ) => {
       const rr = createRequest();
       get.yieldsAsync(null, {statusCode: 404}, 'not found!');
       try {
@@ -125,11 +125,11 @@ describe('Request', () => {
         fail('expected promise to be rejected');
       } catch (err) {
         err.errors.should.eql(['/someUrl: 404! body=not found!']);
-        done();
+         
       }
     });
 
-    it('rejects the promise with an error on a successful response', async (done) => {
+    it('rejects the promise with an error on a successful response', async ( ) => {
       const rr = createRequest();
       const error = 'Error!';
       const responseBody = {Result: {foo: 'bar', Errors: [error], Warnings: []}};
@@ -139,28 +139,28 @@ describe('Request', () => {
         fail('expected promise to be rejected');
       } catch (err) {
         err.errors.should.eql([error]);
-        done();
+         
       }
     });
 
-    it('calls back with a success', (done) => {
+    it('calls back with a success', ( ) => {
       const rr = createRequest();
       const responseBody = {Result: {foo: 'bar', Errors: [], Warnings: []}};
       get.yieldsAsync(null, {}, responseBody);
       rr.doRequest('get', {url: '/someUrl'}, (err, body) => {
         should.not.exist(err);
         body.should.eql(responseBody.Result);
-        done();
+         
       });
     });
 
-    it('resolves the promise with a success', async (done) => {
+    it('resolves the promise with a success', async ( ) => {
       const rr = createRequest();
       const responseBody = {Result: {foo: 'bar', Errors: [], Warnings: []}};
       get.yieldsAsync(null, {}, responseBody);
       const result = await rr.doRequest('get', {url: '/someUrl'});
       result.should.eql(responseBody.Result);
-      done();
+       
     });
   });
 
@@ -185,7 +185,7 @@ describe('Request', () => {
       get.firstCall.args[0].url.should.eql(rr.wsapiUrl + '/security/authorize');
     });
 
-    it('passes along the security token to doRequest and calls back on success', (done) => {
+    it('passes along the security token to doRequest and calls back on success', ( ) => {
       const rr = createRequest();
       const token = 'a secret token';
       const putResponseBody = {OperationResult: {Errors: [], Warnings: [], Object: {}}};
@@ -197,11 +197,11 @@ describe('Request', () => {
         put.firstCall.args[0].qs.key.should.eql(token);
         putResponseBody.OperationResult.should.eql(result);
         should.not.exist(error);
-        done();
+         
       });
     });
 
-    it('passes along the security token to doRequest and resolves the promise on success', async (done) => {
+    it('passes along the security token to doRequest and resolves the promise on success', async ( ) => {
       const rr = createRequest();
       const token = 'a secret token';
       const putResponseBody = {OperationResult: {Errors: [], Warnings: [], Object: {}}};
@@ -212,21 +212,21 @@ describe('Request', () => {
       put.firstCall.args[0].foo.should.eql('bar');
       put.firstCall.args[0].qs.key.should.eql(token);
       putResponseBody.OperationResult.should.eql(result);
-      done();
+       
     });
 
-    it('calls back with error on security token failure', function(done) {
+    it('calls back with error on security token failure', function( ) {
       const rr = createRequest();
       const error = 'Some key error';
       get.yieldsAsync(null, {}, {OperationResult: {Errors: [error]}});
       rr.doSecuredRequest('put', {}, function(err, result) {
         err.errors.should.eql([error]);
         should.not.exist(result);
-        done();
+         
       });
     });
 
-    it('rejects the promise on security token failure', async (done) => {
+    it('rejects the promise on security token failure', async ( ) => {
       const rr = createRequest();
       const error = 'Some key error';
       get.yieldsAsync(null, {}, {OperationResult: {Errors: [error]}});
@@ -234,11 +234,11 @@ describe('Request', () => {
         await rr.doSecuredRequest('put', {});
       } catch (err) {
         err.errors.should.eql([error]);
-        done();
+         
       }
     });
 
-    it('rejects the promise on request failure', async (done) => {
+    it('rejects the promise on request failure', async ( ) => {
       const rr = createRequest();
       const error = 'An error';
       const putResponseBody = {OperationResult: {Errors: [error]}};
@@ -250,10 +250,10 @@ describe('Request', () => {
       } catch (err) {
         err.errors.should.eql([error]);
       }
-      done();
+       
     });
 
-    it('calls back with error on request failure after getting security token', function(done) {
+    it('calls back with error on request failure after getting security token', function( ) {
       const rr = createRequest();
       const error = 'An error';
       const putResponseBody = {OperationResult: {Errors: [error]}};
@@ -262,7 +262,7 @@ describe('Request', () => {
       rr.doSecuredRequest('put', {}, function(err, result) {
         err.errors.should.eql([error]);
         should.not.exist(result);
-        done();
+         
       });
     });
   });
